@@ -1,5 +1,6 @@
 package model;
 
+import exception.NoFundsEnoughException;
 import lombok.Getter;
 import lombok.ToString;
 
