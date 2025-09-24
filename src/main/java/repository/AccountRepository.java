@@ -3,20 +3,29 @@ package repository;
 import exception.AccountNotFoundException;
 import exception.PixInUseException;
 import model.AccountWallet;
+import model.MoneyAudit;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static repository.CommonsRepository.checkFundsForTransaction;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AccountRepository {
-    private List<AccountWallet> accounts;
+    private final List<AccountWallet> accounts = new ArrayList<>();
 
     public AccountWallet create(final List<String> pix, final long initialFunds) {
-        var pixInUse = accounts.stream()
-                .flatMap(a -> a.getPix().stream())
-                .toList();
-        for (var p : pix) {
-            if (pixInUse.contains(p)) {
-                throw new PixInUseException("Chave pix ja em uso: " + p);
+        if (!accounts.isEmpty()) {
+            var pixInUse = accounts.stream()
+                    .flatMap(a -> a.getPix().stream())
+                    .toList();
+            for (var p : pix) {
+                if (pixInUse.contains(p)) {
+                    throw new PixInUseException("Chave pix ja em uso: " + p);
+                }
             }
         }
         var newAccount = new AccountWallet(initialFunds, pix);
@@ -24,9 +33,9 @@ public class AccountRepository {
         return newAccount;
     }
 
-    public void deposit(final String pix, final long amunt) {
+    public void deposit(final String pix, final long amount) {
         var account = findByPix(pix);
-        account.addMoney(amunt, "Deposito de " + amunt + " na conta");
+        account.addMoney(amount, "Deposito de " + amount + " na conta");
     }
 
     public void withdraw(final String pix, final long amount) {
@@ -52,6 +61,13 @@ public class AccountRepository {
 
     public List<AccountWallet> list() {
         return this.accounts;
+    }
+
+    public Map<OffsetDateTime, List<MoneyAudit>> getHistory(final String pix) {
+        var wallet = findByPix(pix);
+        var audit = wallet.getFinancialTransactions();
+        return audit.stream()
+                .collect(Collectors.groupingBy(t -> t.createdAt().truncatedTo(SECONDS)));
     }
 
 }

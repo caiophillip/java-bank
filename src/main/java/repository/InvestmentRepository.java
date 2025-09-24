@@ -2,12 +2,10 @@ package repository;
 
 import exception.AccountWithInvestmentException;
 import exception.InvestmentNotFoundException;
-import exception.PixInUseException;
 import exception.WalletNotFoundException;
 import model.AccountWallet;
 import model.Investiment;
 import model.InvestimentWallet;
-import model.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,7 @@ import java.util.List;
 import static repository.CommonsRepository.checkFundsForTransaction;
 
 public class InvestmentRepository {
-    private long nextId;
+    private long nextId = 0;
     private final List<Investiment> investments = new ArrayList<>();
     private final List<InvestimentWallet> wallets = new ArrayList<>();
 
@@ -27,12 +25,13 @@ public class InvestmentRepository {
     }
 
     public InvestimentWallet initInvestiment(final AccountWallet account, final long id) {
-        var accountInUse = wallets.stream()
-                .map(InvestimentWallet::getAccount).toList();
-        if (accountInUse.contains(account)) {
-            throw new AccountWithInvestmentException("A conta " + account + " ja possui um investimento ativo" );
+        if (!wallets.isEmpty()) {
+            var accountInUse = wallets.stream()
+                    .map(InvestimentWallet::getAccount).toList();
+            if (accountInUse.contains(account)) {
+                throw new AccountWithInvestmentException("A conta " + account + " ja possui um investimento ativo");
+            }
         }
-
 
         var investiment = findById(id);
 
@@ -45,7 +44,7 @@ public class InvestmentRepository {
 
     public InvestimentWallet deposit(final String pix, final long funds) {
         var wallet = findWalletByAccountPix(pix);
-        wallet.addMoney(wallet.getAccount().reduceMoney(funds), wallet.getService(), "Investimetto");
+        wallet.addMoney(wallet.getAccount().reduceMoney(funds), wallet.getService(), "Investimeto");
         return wallet;
     }
 
@@ -59,8 +58,8 @@ public class InvestmentRepository {
         return wallet;
     }
 
-    public void updateAmount(final long percent) {
-        this.wallets.forEach(wallet -> wallet.updateAmount(percent));
+    public void updateAmount() {
+        wallets.forEach(wallet -> wallet.getInvestiment().tax());
     }
 
     public Investiment findById(final long id) {
