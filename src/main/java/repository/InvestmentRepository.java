@@ -59,7 +59,7 @@ public class InvestmentRepository {
     }
 
     public void updateAmount() {
-        wallets.forEach(wallet -> wallet.getInvestiment().tax());
+        wallets.forEach(wallet -> wallet.updateAmount(wallet.getInvestiment().tax()));
     }
 
     public Investiment findById(final long id) {

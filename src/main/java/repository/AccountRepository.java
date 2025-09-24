@@ -5,14 +5,14 @@ import exception.PixInUseException;
 import model.AccountWallet;
 import model.MoneyAudit;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static repository.CommonsRepository.checkFundsForTransaction;
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static repository.CommonsRepository.checkFundsForTransaction;
 
 public class AccountRepository {
     private final List<AccountWallet> accounts = new ArrayList<>();

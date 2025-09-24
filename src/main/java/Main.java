@@ -1,7 +1,6 @@
 import exception.AccountNotFoundException;
 import exception.NoFundsEnoughException;
 import exception.WalletNotFoundException;
-import model.AccountWallet;
 import repository.AccountRepository;
 import repository.InvestmentRepository;
 
@@ -73,7 +72,7 @@ public class Main {
         System.out.println("Digite o valor inicial de deposito:");
         var initialFunds = scanner.nextLong();
         var investiment = investmentRepository.create(tax, initialFunds);
-        System.out.println("Investimento criado com sucesso" + investiment);
+        System.out.println("Investimento criado com sucesso " + investiment);
     }
 
     private static void createWalletInvestment() {
@@ -90,6 +89,7 @@ public class Main {
 
     private static void deposit() {
         System.out.println("Digite a chave pix da conta:");
+        scanner.nextLine();
         var pix = scanner.nextLine();
         System.out.println("Digite o valor do deposito:");
         var amount = scanner.nextLong();
@@ -103,6 +103,7 @@ public class Main {
 
     private static void withdraw() {
         System.out.println("Digite a chave pix da conta:");
+        scanner.nextLine();
         var pix = scanner.nextLine();
         System.out.println("Digite o valor do saque:");
         var amount = scanner.nextLong();
@@ -117,6 +118,7 @@ public class Main {
 
     private static void transfer() {
         System.out.println("Digite a chave pix da conta de origem:");
+        scanner.nextLine();
         var sourcePix = scanner.nextLine();
         System.out.println("Digite a chave pix da conta de destino:");
         var targetPix = scanner.nextLine();
@@ -128,6 +130,7 @@ public class Main {
 
     private static void invest() {
         System.out.println("Digite a chave pix da conta:");
+        scanner.nextLine();
         var pix = scanner.nextLine();
         System.out.println("Digite o valor do investimento:");
         var amount = scanner.nextLong();
@@ -141,6 +144,7 @@ public class Main {
 
     public static void redeem() {
         System.out.println("Digite a chave pix da conta:");
+        scanner.nextLine();
         var pix = scanner.nextLine();
         System.out.println("Digite o valor do resgate:");
         var amount = scanner.nextLong();
@@ -150,10 +154,11 @@ public class Main {
 
     private static void accountHistory() {
         System.out.println("Digite a chave pix da conta:");
+        scanner.nextLine();
         var pix = scanner.nextLine();
-        AccountWallet wallet;
         try {
             var sortedHistory = accountRepository.getHistory(pix);
+            System.out.println("Historico da conta com a chave pix " + pix + ":");
             sortedHistory.forEach((k, v) -> {
                 System.out.println(k.format(ISO_DATE_TIME));
                 System.out.println(v.getFirst().transactionId());
@@ -163,8 +168,5 @@ public class Main {
         } catch (AccountNotFoundException e) {
             System.out.println(e.getMessage());
         }
-        var account = accountRepository.findByPix(pix);
-        System.out.println("Historico da conta " + pix + ":");
-        account.getFinancialTransactions().forEach(System.out::println);
     }
 }

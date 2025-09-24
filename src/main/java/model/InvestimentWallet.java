@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 import static model.BankService.INVESTMENT;
 
 @Getter
-public class InvestimentWallet extends Wallet{
+public class InvestimentWallet extends Wallet {
     private final Investiment investiment;
     private final AccountWallet account;
 
